@@ -7,11 +7,11 @@ const columns = [
   "策略编号",
   "目标域名",
   "分配算法",
-  "权重因子",
-  "节点亲和性",
-  "负载阈值",
-  "再平衡间隔",
-  "溢出处理"
+  "可调度节点数",
+  "可调度节点",
+  "可用槽位",
+  "批次版本",
+  "最近同步时间"
 ]
 const actions = [
   "提交策略验证",
@@ -39,7 +39,7 @@ const stats = [
   }
 ]
 
-type Row = Record<string, string | number | null>
+type Row = Record<string, string | number | string[] | null>
 
 export default function DispatchView() {
   const [rows, setRows] = useState<Row[]>([])
@@ -68,6 +68,18 @@ export default function DispatchView() {
     void reload()
   }, [reload])
 
+  async function syncRoster() {
+    setErrorMessage('')
+    try {
+      const response = await request('/api/routing/sync', { method: 'POST', body: JSON.stringify({}) })
+      const payload = await response.json()
+      if (!response.ok) throw new Error(payload?.detail ?? '分流清单同步失败')
+      await reload()
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : '分流清单同步失败')
+    }
+  }
+
   async function runAction(action: string, row: Row) {
     setErrorMessage('')
     try {
@@ -89,9 +101,14 @@ export default function DispatchView() {
       <header className="page-head">
         <div>
           <h2>请求分配管理</h2>
-          <p className="page-desc">管理采集请求的分配策略，按域名粒度和节点负载进行动态调度。</p>
+          <p className="page-desc">
+            管理采集请求的分配策略，按域名粒度读取同一份可调度节点结果，并同步到请求分流侧清单。
+          </p>
         </div>
         <div className="page-actions">
+          <button className="btn" type="button" onClick={() => void syncRoster()}>
+            同步分流清单
+          </button>
           <button className="btn primary" type="button" onClick={() => setErrorMessage('分配策略登记入口尚未接入审批流')}>
             登记分配策略
           </button>
@@ -135,7 +152,7 @@ export default function DispatchView() {
         <tbody>
           {rows.map((row) => (
             <tr key={String(row.id)}>
-              {columns.map((column) => <td key={column}>{row[column] ?? '—'}</td>)}
+              {columns.map((column) => <td key={column}>{formatCell(row[column])}</td>)}
               <td className="row-actions">
                 {actions.map((action) => (
                   <button key={action} className="link" type="button" onClick={() => void runAction(action, row)}>
@@ -159,4 +176,10 @@ export default function DispatchView() {
       </footer>
     </section>
   )
+}
+
+function formatCell(value: string | number | string[] | null | undefined): string {
+  if (value === null || value === undefined || value === '') return '—'
+  if (Array.isArray(value)) return value.length ? value.join('、') : '—'
+  return String(value)
 }

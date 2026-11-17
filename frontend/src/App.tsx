@@ -19,8 +19,11 @@ import ConfigsyncView from './views/configsync'
 import ScrapeapiView from './views/scrapeapi'
 import DatasampleView from './views/datasample'
 import AlertpolicyView from './views/alertpolicy'
+import HeartbeatView from './views/heartbeat'
+import SchedulableView from './views/schedulable'
+import RoutingView from './views/routing'
 
-const navItems = [{ label: "运营概览", path: "/" }, { label: "采集节点", path: "/worker" }, { label: "请求分配", path: "/dispatch" }, { label: "抓取作业", path: "/crawljob" }, { label: "URL过滤", path: "/urlfilter" }, { label: "DNS解析", path: "/dnsresolver" }, { label: "内容提取", path: "/contentextract" }, { label: "存储策略", path: "/storagestrategy" }, { label: "渲染任务", path: "/rendertask" }, { label: "采集质量", path: "/qualityreport" }, { label: "带宽控制", path: "/bandwidth" }, { label: "重试队列", path: "/retryqueue" }, { label: "翻页管理", path: "/pagemarker" }, { label: "增量标记", path: "/incrementmark" }, { label: "配置同步", path: "/configsync" }, { label: "采集API", path: "/scrapeapi" }, { label: "数据抽样", path: "/datasample" }, { label: "采集告警", path: "/alertpolicy" }]
+const navItems = [{ label: "运营概览", path: "/" }, { label: "采集节点", path: "/worker" }, { label: "节点心跳租约", path: "/heartbeat" }, { label: "可调度节点结果", path: "/schedulable" }, { label: "请求分流侧", path: "/routing" }, { label: "请求分配", path: "/dispatch" }, { label: "抓取作业", path: "/crawljob" }, { label: "URL过滤", path: "/urlfilter" }, { label: "DNS解析", path: "/dnsresolver" }, { label: "内容提取", path: "/contentextract" }, { label: "存储策略", path: "/storagestrategy" }, { label: "渲染任务", path: "/rendertask" }, { label: "采集质量", path: "/qualityreport" }, { label: "带宽控制", path: "/bandwidth" }, { label: "重试队列", path: "/retryqueue" }, { label: "翻页管理", path: "/pagemarker" }, { label: "增量标记", path: "/incrementmark" }, { label: "配置同步", path: "/configsync" }, { label: "采集API", path: "/scrapeapi" }, { label: "数据抽样", path: "/datasample" }, { label: "采集告警", path: "/alertpolicy" }]
 
 export default function App() {
   const [operator] = useState('值班管理员')
@@ -45,6 +48,9 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Overview />} />
           <Route path="/worker" element={<WorkerView />} />
+          <Route path="/heartbeat" element={<HeartbeatView />} />
+          <Route path="/schedulable" element={<SchedulableView />} />
+          <Route path="/routing" element={<RoutingView />} />
           <Route path="/dispatch" element={<DispatchView />} />
           <Route path="/crawljob" element={<CrawljobView />} />
           <Route path="/urlfilter" element={<UrlfilterView />} />

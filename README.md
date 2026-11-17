@@ -50,6 +50,9 @@ npm run dev
 | 模块 | 目录 | 业务对象 | 主要字段 |
 | --- | --- | --- | --- |
 | 采集节点 | `worker` | 工作节点 | 节点编号、主机地址、并发槽位数 |
+| 节点心跳租约 | `heartbeat` | 心跳事件 | 事件编号、节点编号、采集时间、租约秒数、槽位快照 |
+| 可调度节点结果 | `schedulable` | 可调度批次 | 批次版本、条目、内容摘要、边界冲突 |
+| 请求分流侧 | `routing` | 分流清单 / 请求分配 | 目标域名、节点编号、处置、源批次版本 |
 | 请求分配 | `dispatch` | 分配策略 | 策略编号、目标域名、分配算法 |
 | 抓取作业 | `crawljob` | 作业定义 | 作业编号、目标站点、起始URL |
 | URL过滤 | `urlfilter` | 过滤规则 | 规则编号、包含模式、排除模式 |
@@ -76,3 +79,20 @@ npm run dev
 
 领域：数据工程
 子方向：数据采集、爬虫与RPA
+
+## 心跳租约链路
+
+采集节点的心跳会先落成事件（`/api/heartbeat/collect`），处理时校验租约与槽位快照、
+写入节点判定链（`/api/heartbeat/ingest`），再发布可调度节点结果批次
+（`/api/schedulable`）并刷新请求分流侧清单（`/api/routing`）。
+
+节点在线/离线只有一个来源：节点记录里的判定链；批次边界冲突、租约到期与人工离线
+的最终记录、请求转派与保留理由都可以从这条链路追溯。设计细节与接口清单见
+[`backend/docs/heartbeat-lease.md`](backend/docs/heartbeat-lease.md)。
+
+后端测试：
+
+```bash
+cd backend
+.venv/bin/python -m pytest tests -q
+```

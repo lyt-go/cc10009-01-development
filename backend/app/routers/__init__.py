@@ -23,5 +23,29 @@ from app.routers import configsync as router_configsync
 from app.routers import scrapeapi as router_scrapeapi
 from app.routers import datasample as router_datasample
 from app.routers import alertpolicy as router_alertpolicy
+from app.routers import heartbeat as router_heartbeat
+from app.routers import schedulable as router_schedulable
+from app.routers import routing as router_routing
 
-ROUTERS = [router_worker, router_dispatch, router_crawljob, router_urlfilter, router_dnsresolver, router_contentextract, router_storagestrategy, router_rendertask, router_qualityreport, router_bandwidth, router_retryqueue, router_pagemarker, router_incrementmark, router_configsync, router_scrapeapi, router_datasample, router_alertpolicy]
+ROUTERS = [
+    router_worker,
+    router_dispatch,
+    router_crawljob,
+    router_urlfilter,
+    router_dnsresolver,
+    router_contentextract,
+    router_storagestrategy,
+    router_rendertask,
+    router_qualityreport,
+    router_bandwidth,
+    router_retryqueue,
+    router_pagemarker,
+    router_incrementmark,
+    router_configsync,
+    router_scrapeapi,
+    router_datasample,
+    router_alertpolicy,
+    router_heartbeat,
+    router_schedulable,
+    router_routing,
+]
